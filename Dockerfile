@@ -1,4 +1,4 @@
-# ETAPA 1: Construcción del archivo JAR con Gradle y JDK 21
+# ETAPA 1: Compilación del archivo JAR con Gradle y JDK 21
 FROM gradle:jdk21 AS build
 WORKDIR /app
 
@@ -6,14 +6,14 @@ WORKDIR /app
 COPY build.gradle settings.gradle ./
 COPY gradle ./gradle
 
-# Copiar el código fuente
+# Copiar el código fuente del proyecto
 COPY src ./src
 
-# Compilar y empaquetar el proyecto omitiendo los tests
+# Compilar y empaquetar el proyecto omitiendo pruebas
 RUN gradle bootJar --no-daemon -x test
 
-# Renombrar automáticamente el .jar principal a app.jar descartando el plain.jar
-RUN cp $(ls /app/build/libs/*.jar | grep -v plain) /app/app.jar
+# Renombrar automáticamente el archivo .jar ejecutable a app.jar
+RUN find /app/build/libs -name "*.jar" ! -name "*plain*" -exec cp {} /app/app.jar \;
 
 # ETAPA 2: Entorno de ejecución ligero con OpenJDK 21
 FROM eclipse-temurin:21-jre-jammy
