@@ -12,12 +12,15 @@ COPY src ./src
 # Compilar y empaquetar el proyecto omitiendo los tests
 RUN gradle bootJar --no-daemon -x test
 
-# ETAPA 2: Entorno de ejecución con OpenJDK 21
+# Renombrar automáticamente el .jar principal a app.jar descartando el plain.jar
+RUN cp $(ls /app/build/libs/*.jar | grep -v plain) /app/app.jar
+
+# ETAPA 2: Entorno de ejecución ligero con OpenJDK 21
 FROM eclipse-temurin:21-jre-jammy
 WORKDIR /app
 
-# Copiar el .jar compilado en la etapa anterior con su nombre exacto
-COPY --from=build /app/build/libs/iplacex-discografica-api-juan_mendoza-1.jar app.jar
+# Copiar el archivo app.jar listo desde la etapa de compilación
+COPY --from=build /app/app.jar app.jar
 
 # Exponer el puerto de Spring Boot
 EXPOSE 8080
