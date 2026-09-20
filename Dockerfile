@@ -26,4 +26,4 @@ COPY --from=build /app/app.jar app.jar
 EXPOSE 8080
 
 # Iniciar la API
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-Dspring.data.mongodb.uri=mongodb+srv://mendozapadilla_db_user:juanfe001@eva-u2-spring.brcuerv.mongodb.net/discografica-db?retryWrites=true&w=majority", "-jar", "app.jar"]
